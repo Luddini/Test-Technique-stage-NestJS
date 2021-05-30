@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:didi1998@localhost:5432/prisma"
+}
+
+model User {
+  @@map(name:"user")
+  id       Int    @id @default(autoincrement())
+  username String @unique @db.VarChar(255)
+  articles Article[]
+  issue Issue[]
+}
+
+model Editor {
+  @@map(name:"editor")
+  id       Int    @id @default(autoincrement())
+  username String @unique @db.VarChar(255)
+  email String  @unique @db.VarChar(255)
+  articles Article[]
+  issue Issue[]
+}
+
+model Article{
+   @@map(name:"article")
+   id       Int    @id @default(autoincrement())
+   title String
+   article String @db.VarChar(500)
+   created_at DateTime @default(now())
+   updated_at DateTime @updatedAt
+   author Editor @relation(fields: [author_id], references: [id])
+   user User @relation(fields: [user_id], references: [id])
+   issue Issue @relation(fields: [issue_id], references: [id])
+   author_id Int
+   user_id Int
+   issue_id Int
+
+}
+
+model Issue{
+@@map(name:"issue")  
+id       Int    @id @default(autoincrement())
+title String
+created_at DateTime @default(now())
+updated_at DateTime @updatedAt
+author Editor @relation(fields: [author_id], references: [id])
+user User @relation(fields: [user_id], references: [id])
+author_id Int
+user_id Int
+articles Article[]
+
+}
